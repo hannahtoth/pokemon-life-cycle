@@ -29,14 +29,35 @@ class PokeFetch extends Component {
       .catch((err) => console.log(err))
   }
 
+   
+  tCountdown(){
+    this.countdown = setInterval(() =>{
+      this.setState({
+        tCount: this.state.tCount -1
+      });
+      
+    },1000) }
+
+  tSet(){
+    this.setState({
+      tCount: 10
+    }, this.tCountdown())    
+    }
+
+
+  componentDidUpdate(){
+    if(this.state.tCount <=0){
+      clearInterval(this.countdown);}
+  }
+
   render() {
     return (
       <div className={'wrapper'}>
-        <button className={'start'} onClick={() => this.fetchPokemon()}>Start!</button>
-        <h1 className={'timer'} >Timer Display</h1>
+        <button className={'start'} onClick={() => {this.tSet(); this.fetchPokemon()}}>Start!</button>
+        <h1 className={'timer'} style= {{visibility: this.state.tCount === 0 ? "hidden" : "visible"}}>{this.state.tCount}</h1>
         <div className={'pokeWrap'}>
-          <img className={'pokeImg'} src={this.state.pokeSprite} />
-          <h1 className={'pokeName'}>{this.state.pokeName}</h1>
+          <img className={'pokeImg'} src={this.state.pokeSprite} style= {{filter: `brightness(${this.state.tCount > 0 ? 10 :100}%)`}} />
+          <h1 className={'pokeName'} style= {{visibility: this.state.tCount > 0 ? "hidden" : "visible"}}>{this.state.pokeName}</h1>
         </div>
       </div>
     )
